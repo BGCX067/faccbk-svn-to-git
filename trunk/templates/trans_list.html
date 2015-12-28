@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block headerblock %}
+<script type="text/javascript" src="/htdocs/javascript/bill.js?v={{ system_version }}"></script>
+{% endblock %}
+
+{% block header_title %}
+	{{"Transaction List"|trans}}-{{bill_month|date:"Y-m"}}	
+{% endblock %}
+
+{% block pagebodyblock %}
+<div id="trans_list_header">
+	<div id="trans_list_cmd">
+		<a href="/trans" class="btn"><span><span>{{"New"|trans}}</span></span></a>
+		<!--
+		<a href="#" onclick="open_new_trans_form()">Add</a>
+<button id="create-transaction">Create new transaction</button>
+		-->
+		<button type="button" class="btn"><span><span>{{"Delete"|trans}}</span></span></button>&nbsp;&nbsp;&nbsp;|&nbsp;
+		<a href="/trans_list/{{previous_month.year}}/{{previous_month.month}}">&lt;&lt;{{"Previous month"|trans}}</a>&nbsp;|
+		{% if next_month %}
+			{{"Next month"|trans}}
+		{% else %}
+			<a href="/trans_list/{{next_month.year}}/{{next_month.month}}">{{"Next month"|trans}}&gt;&gt;</a>
+		{% endif %}
+	</div>
+	<div id="trans_list_other_cmd">
+		<a href="#" class="btn"><span><span>{{"Export"|trans}}</span></span></a>
+		
+		<!--a href="#" class="btn"><span><span>{{"Print"|trans}}</span></span></a-->
+	</div>	
+</div>
+<table id="trans_list">
+    <thead>
+        <tr>
+            <th style="width:30px">
+                <input type="checkbox">
+            </th>
+
+            <th>
+                {{"Info"|trans}}
+            </th>
+            <th>
+                {{"Payee"|trans}}
+            </th>
+            <th>
+                {{"Category"|trans}}
+            </th>
+            <th>
+                {{"Description"|trans}}
+            </th>
+			<th>
+                {{"Expense"|trans}}
+            </th>
+            <th>
+                {{"Income"|trans}}
+            </th>
+			<th>
+                {{"Trans Date"|trans}}
+            </th>
+			<th>
+                {{"Post Date"|trans}}
+            </th>
+            <!--
+            <th>Card Number(last 4 digits)</th>
+            <th>Country/Area</th>
+            <th>EX Date</th>
+            <th>Original Trans Amount</th>
+            -->
+        </tr>
+    </thead>
+    <tbody>
+    	{#% regroup trans_account_and_trans_list_list by trans_account as trans_account_list %#}
+        {% for trans_account_and_trans_list in trans_account_and_trans_list_list %}
+			<tr>
+	            <td colspan="9"> 
+					<b><a href="/trans_account/{{trans_account_and_trans_list.trans_account.key}}"></a>
+						{{trans_account_and_trans_list.trans_account|get_account_name}}
+					</b>
+				</td>
+			</tr>
+				{% for trans in trans_account_and_trans_list.trans_list %}
+		        <tr class="{% cycle row1,row2 %}">
+		            <td>
+		                <input type="checkbox">
+						<a href="/trans/{{trans.key}}">#</a>
+		            </td>
+		            <td>
+		            	{{trans.information}}
+		            </td>
+		            <td>
+		                {{trans.payee.title}}
+		            </td>
+		            <td>
+		                {{trans.trans_purpose_category.title}}
+		            </td>
+		            <td>
+		                {{trans.description}}
+		            </td>
+		            <td class="money money_expense">
+		            	{% if not trans.amount|compare0 %}
+		                	{{trans.amount|money}}
+						{% endif %}
+		            </td>
+					<td class="money money_income">
+		                {% if trans.amount|compare0 %}
+		                	{{trans.amount|money}}
+						{% endif %}
+		            </td>
+					<td>
+		                {{trans.trans_date|date:"Y-m-d"}}
+		            </td>
+					<td>
+		                {{trans.post_time|date:"Y-m-d"}}
+		            </td>
+		            <!--
+		            <td></td>
+		            <td>{{acc_item.trans_date}}</td>
+		            <td>{{acc_item.trans_date}}</td>
+		            <td>{{acc_item.trans_date}}</td>
+		            -->
+		        </tr>
+				{% endfor %}
+				<tr class="money_total_row">
+					<td colspan="5"></td> 
+					<td class="money money_expense"> 
+						{{trans_account_and_trans_list.trans_account.expense}}
+					</td>
+					<td class="money money_income"> 
+						{{trans_account_and_trans_list.trans_account.income}}
+					</td>
+					<td class="money"> 
+						{{"Balance"|trans}}
+					</td>
+					<td class="money {{trans_account_and_trans_list.trans_account.balance|transtype2colorclass}}"> 
+						<b>{{trans_account_and_trans_list.trans_account.balance}}</b>
+					</td>
+				</tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr class="money_total_row">
+            <td class="money" colspan="8">
+            	{{"All Accounts balance"|trans}}
+            </td>
+            <td class="money {{all_account_balance|transtype2colorclass}}">
+            	{{all_account_balance}}
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<!--div id="new-trans-form" title="Create new transaction">
+{% include 'new_trans.html' %}
+</div-->
+
+{% endblock %}

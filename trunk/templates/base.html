@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Family Account Book</title>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" type="text/css" media="screen"  href="/htdocs/css/style.css?v={{ system_version }}" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
+		{% block headerblock %}{% endblock %}
+	</head>
+	<body>
+		<div id="page">
+			<div id="header">
+				<div id="header_title">{% block header_title %}{% endblock %}</div>
+				<div id="header_account">
+				{{user.nickname}} | 
+				{% if admin_flag %} 
+					{% if development_flag %}
+						<a href="/_ah/admin">{{"Admin"|trans}}</a> 
+					{% else%}
+						<a href="{{producation_env_admin_url}}">{{"Admin"|trans}}</a> 
+					{% endif %}
+					<a href="/about">#</a> | 
+				{% endif %}
+				<a href="/settings/">{{"Settings"|trans}}</a> | 
+				<a href="#">{{"Help"|trans}}</a> | 
+				<a href="{{logout_url}}">{{"sign out"|trans}}</a>
+				</div>
+			</div>
+			{% block pagebodyblock %}{% endblock %}
+			<div id="footer">
+				<a href="http://code.google.com/p/faccbk/">{{"faccbk project"|trans}}</a> | 
+				<a href="http://code.google.com/p/faccbk/issues/list">{{"Report issue"|trans}}</a> |
+				{{"Current version"|trans}}: {{CURRENT_VERSION_ID}} 
+				{% if development_flag %}
+				| <b><font color="red">{{"Developer Testing"|trans}}!</font></b>
+				{% endif %}
+				<p>
+				<img src="http://code.google.com/appengine/images/appengine-silver-120x30.gif" 
+				alt="Powered by Google App Engine" />
+			</div>
+		</div>
+	</body>
+</html>

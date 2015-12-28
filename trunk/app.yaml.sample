@@ -1,0 +1,55 @@
+application: faccbk-test
+version: a01
+runtime: python
+api_version: 1
+
+#default_expiration: "10d"
+
+derived_file_type:
+- python_precompiled
+
+handlers:
+
+- url: /_ah/login_required
+  script: do_openid_login.py
+
+- url: /
+  script: main.py
+  login: required
+
+- url: /favicon.ico
+  static_files: htdocs/images/favicon.ico
+  upload: htdocs/images/favicon.ico
+  
+- url: /htdocs
+  static_dir: htdocs
+
+- url: /about
+  script: main.py
+
+- url: /trans_list
+  script: translist.py
+  
+- url: /trans_list/.*
+  script: translist.py
+  login: required
+  
+- url: /transaccount
+  script: transaccount.py
+  login: required
+  
+- url: /trans
+  script: trans.py
+  login: required
+
+- url: /trans/.*
+  script: trans.py
+  login: required
+  
+- url: /trans_account
+  script: transaccount.py
+  login: required
+  
+- url: /trans_account/.*
+  script: transaccount.py
+  login: required

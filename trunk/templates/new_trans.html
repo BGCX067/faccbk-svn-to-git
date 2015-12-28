@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block headerblock %}
+<script type="text/javascript" src="/htdocs/javascript/bill.js?v={{ system_version }}"></script>
+{% endblock %}
+
+{% block header_title %}
+{% if transaction_update_flag %}
+{{"Update Transaction"|trans}}
+{% else %}
+{{"New Transaction"|trans}}
+{% endif %}
+{% endblock %}
+
+{% block pagebodyblock %}
+
+{% if transaction_update_flag %}
+<form action="/trans/{{transaction_key}}" method="POST" accept-charset="utf-8">
+{% else %}
+<form action="/trans" method="POST" accept-charset="utf-8">
+{% endif %}
+    
+        <table class="form_table">
+            <tr>
+                <td width="120px" class="title">
+                    <label for="trans_date">
+                        {{"Trans Date"|trans}}:
+                    </label>
+                </td>
+                <td width="300px">
+                    <input type="text" name="trans_date" id="trans_date" value="{% now "Y-m-d" %}" class="input_ui" />
+                </td>
+            </tr>
+            <tr>
+                <td class="title">
+                    <label for="trans_account">
+                        {{"Account"|trans}}:
+                    </label>
+                </td>
+                <td>
+                	<select name="trans_account" class="input_ui">
+                		{% for trans_account in trans_account_list %}
+						<option value="{{trans_account.key}}"{% ifequal trans_account.key transaction.trans_account.key %} selected="true" {% endifequal %}>{{trans_account|get_account_name}}</option>
+						{% endfor %}
+                	</select>
+                </td>
+            </tr>
+            <tr>
+                <td class="title">
+                    <label for="trans_purpose_category">
+                        {{"Category"|trans}}:
+                    </label>
+                </td>
+                <td>
+                    <select name="trans_purpose_category" class="input_ui">
+                        {% for trans_purpose_category in trans_purpose_category_list %}
+							<option value ="{{trans_purpose_category.key}}" {% ifequal trans_purpose_category.key transaction.trans_purpose_category.key %} selected="true" {% endifequal %}>{{trans_purpose_category.title}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+			<tr>
+                <td class="title">
+                    <label for="trans_info">
+                        {{"Infomation"|trans}}:
+                    </label>
+                </td>
+                <td>
+                    <input type="text" name="information" id="information" value="{{transaction.information}}" class="input_ui" />
+                </td>
+            </tr>
+			<tr>
+                <td class="title">
+                    <label for="trans_payee">
+                        {{"Payee"|trans}}:
+                    </label>
+                </td>
+                <td>
+                    <select name="payee" class="input_ui">
+                        {% for payee in payee_list %}
+							<option value ="{{payee.key}}" {% ifequal payee.key transaction.payee.key %} selected="true" {% endifequal %}>{{payee.title}}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="title">
+                    <label for="description">
+                        {{"Description"|trans}}:
+                    </label>
+                </td>
+                <td>
+                    <input type="text" name="description" id="description" value="{{transaction.description}}" class="input_ui" />
+                </td>
+            </tr>
+            <tr>
+                <td class="title">
+                    <label for="amount">
+                        {{"Amount"|trans}}:
+                    </label>
+                </td>
+                <td>
+                    <input type="text" name="amount" id="amount" value="{{transaction.amount|money}}" class="money" style="width:100px" />
+					{% if transaction_update_flag %}
+					<label>
+                        <input type="radio" name="trans_type" value="income" {% ifequal transaction.trans_type 'income' %} checked="true" {% endifequal %}>Income
+                    </label>
+                    <label>
+                        <input type="radio" name="trans_type" value="expense" {% ifequal transaction.trans_type 'expense' %} checked="true" {% endifequal %}>Expense
+                    </label>
+					{% else %}
+						<label>
+                        <input type="radio" name="trans_type" value="income">{{"Income"|trans}}
+                    </label>
+                    <label>
+                        <input type="radio" name="trans_type" value="expense" checked="true">{{"Expense"|trans}}
+                    </label>
+					{% endif%}
+                </td>
+            </tr>
+			<tr>
+				<td colspan="2" style="text-align: right;height: 26px;">
+					<button type="submit" class="btn"><span><span>{{"Submit"|trans}}</span></span></button>
+					<a href="/trans_list" class="btn"><span><span>{{"Cancel"|trans}}</span></span></a>
+				</td>
+			</tr>
+        </table>
+    
+	
+</form>
+{% endblock %}

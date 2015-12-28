@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block headerblock %}
+{% endblock %}
+{% block pagebodyblock %}
+	{% for trans_account in trans_account_list %}
+		{{trans_account.bank_name}}
+	{% endfor %}
+{% endblock %}

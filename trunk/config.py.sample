@@ -1,0 +1,57 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+'''
+Created on Aug 15, 2010
+
+@author: Wang Yuanyi
+'''
+
+#please change follow 2 row by your family numbers google account
+Admin = '@gmail.com'
+Users = ['@gmail.com','@gmail.com']
+
+TEST = False
+
+from wiwikai.faccbk import TransPurposeCategory, TransAccount, Payee, \
+    trans_type_expense, trans_type_income, trans_account_type_credit_card, \
+    trans_account_type_debit_card
+    
+import os
+
+server_software = os.environ['SERVER_SOFTWARE']
+
+DEVELOPMENT = False
+
+if server_software.startswith('Development'):
+    DEVELOPMENT = True
+    TEST = True
+
+if DEVELOPMENT == True:
+    Admin = 'test@example.com'
+    Users = ['test@example.com']
+    
+if TEST:
+    def insert_trans_purpose_category(ptitle, ptrans_type):
+        transTargetCtg = TransPurposeCategory(title = ptitle, trans_type = ptrans_type )
+        transTargetCtg.put()
+        
+    def insert_trans_account(plastnumber, ptrans_account_type, pbank_name, pstatement_date, ppayment_due_date):
+        creditCard = TransAccount(last4number = plastnumber, type=ptrans_account_type, bank_name = pbank_name, statement_date = pstatement_date, payment_due_date =ppayment_due_date )
+        creditCard.put()
+    
+    def insert_payee(payee_title):
+        payee = Payee(title = payee_title)
+        payee.put()
+        
+    if TransPurposeCategory.all().count() == 0:
+        insert_trans_purpose_category(u"家庭食物支出", trans_type_expense)
+        insert_trans_purpose_category(u"工资收入", trans_type_income)
+        
+    if TransAccount.all().count() == 0:
+        insert_trans_account('8888', trans_account_type_credit_card, 'ICBC', 20, 8)
+        insert_trans_account('7777', trans_account_type_debit_card, 'JBC', 25, 15)
+        
+    if Payee.all().count() == 0:
+        insert_payee(u'孩子')
+        insert_payee(u'老婆')
+        insert_payee(u'自己')
